@@ -1,25 +1,29 @@
-var gulp = require('gulp');
-var $    = require('gulp-load-plugins')();
+"use strict";
 
-var sassPaths = [
-  'bower_components/normalize.scss/sass',
-  'bower_components/foundation-sites/scss',
-  'bower_components/motion-ui/src'
-];
+import plugins from 'gulp-load-plugins';
+import yargs from 'yargs';
+import browser from 'browser-sync';
+import gulp from 'gulp';
+import panini from 'panini';
+import rimraf from 'rimraf';
+import sherpa from 'style-sherpa';
+import yaml from 'js-yaml';
+import fs from 'fs';
+import webpackStream from 'webpack-stream';
+import webpack2 from 'webpack';
+import named from 'vinyl-named';
 
-gulp.task('sass', function() {
-  return gulp.src('scss/app.scss')
-    .pipe($.sass({
-      includePaths: sassPaths,
-      outputStyle: 'compressed' // if css compressed **file size**
-    })
-      .on('error', $.sass.logError))
-    .pipe($.autoprefixer({
-      browsers: ['last 2 versions', 'ie >= 9']
-    }))
-    .pipe(gulp.dest('css'));
-});
 
-gulp.task('default', ['sass'], function() {
-  gulp.watch(['scss/**/*.scss'], ['sass']);
-});
+// Load all of the Gulp plugins into a sungle variable
+const $ = plugins();
+
+// Check for the production flag
+const PRODUCTION = !!(yargs.argv.production);
+
+// Load settings from the settings.yml file
+const { COMPATIBILITY, PORT, UNCSS_OPTIONS, PATHS } = loadConfig();
+
+function loadConfig() {
+  let ymlFile = fs.readFileSync('config.yml', 'utf8');
+  return yaml.load(ymlFile);
+}
