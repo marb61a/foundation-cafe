@@ -43,6 +43,39 @@ function clean(done){
   rimraf(PATHS.dist, done);
 }
 
+// Copy files out of the asssets folder, this skips img, js and scss files which are separately parsed
+function copy(){
+  return gulp.src(PATHS.assets)
+    .pipe(gulp.dest(PATHS.dist, '/assets'));
+}
+
+// Copy page templates into finished HTML files
+function pages(){
+  return gulp.src('src/pages/**/*.{html,hbs,handlebars}')
+    .pipe(panini({
+      root: 'src/pages/',
+      layouts: 'src/layouts/',
+      partials: 'src/partials',
+      data: 'src/data/',
+      helpers: 'src/helpers'
+    }))
+    .pipe(gulp.dest(PATHS.dist));
+}
+
+// Load updated Html templates and partials into panini
+function resetPages(done){
+  panini.refresh();
+  done();
+}
+
+// Generate a style guide from the Markdown content and HTML template in styleguide/
+function styleGuide(done){
+  sherpa('src/styleguide/index.md', {
+    output: PATHS.dist + '/styleguide.html',
+    template: 'src/styleguide/template.html'
+  }, done);
+}
+
 // Start a server with BrowserSync to preview site in
 function server(done){
   browser.init({
