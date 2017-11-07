@@ -76,6 +76,40 @@ function styleGuide(done){
   }, done);
 }
 
+// Compile Sass into CSS which in production is compressed
+function sass(){
+  return gulp.src('src/assets/scss/app.scss')
+    .pipe($.sourcemaps.init())
+    .pipe($.sass({
+      includePaths: PATHS.sass
+    })
+      .on('error', $.sass.logError))
+    .pipe($.autoprefixer({
+      browsers: COMPATIBILITY
+    }))
+    // Uncomment the below pipe to run UnCSS in a production environment
+    // .pipe($.if(PRODUCTION, $.uncss(UNCSS_OPTIONS)))
+    .pipe($.if(PRODUCTION, $.cleanCss({ compatibility: 'ie9' })))
+    .pipe($.if(!PRODUCTION, $.sourcemaps.write()))
+    .pipe(gulp.dest(PATHS.dist + '/assets/css'))
+    .pipe(browser.reload({stream: true}));
+}
+
+let webpackConfig = {
+  module: {
+    rules: [
+      {
+        test: /.js$/,
+        use: [
+          {
+            loader: 'babel-loader'
+          }  
+        ]
+      }    
+    ]
+  }
+};
+
 // Start a server with BrowserSync to preview site in
 function server(done){
   browser.init({
