@@ -28,11 +28,48 @@
                             <div class="title-bar-title">Menu</div>
                         </div>
                         <ul id="main-nav" class="main-navigation" data-animate="menu-in menu-out">
-                            
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="about.html">About Us</a></li>
+                            <li><a href="process.html">Process</a></li>
+                            <li><a href="menu.html">Menu</a></li>
+                            <li><a href="gallery.html">Gallery</a></li>
+                            <li><a href="contact.html">Contact Us</a></li>
                         </ul>
                     </div>
                 </div>
+                <div class="bottom-section">
+                    <h1 class="slogan">{{slogan}} </h1>  
+                </div>
             </div>
         </header> 
+        
+        {{!-- Pages you create in the src/pages/ folder are inserted here when the flattened page is created. --}}
+        {{> body}}
+        
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-box">
+                        <h3>Locations</h3>
+                        <p>35 Upper O'Connell Street. </p>
+                        <p>Dublin 1</p>
+                    </div>
+                    <div class="footer-box">
+                        <h3>Reservation</h3>
+                        <p>Call us:</p>
+                        <p>01-555-0126</p>
+                    </div>
+                    <div class="footer-box">
+                        <h3>Opening Table</h3>
+                        <p>Mon - Thu 09:00 - 22:00 </p>
+                        <p>Fri - Sat 09:00 - 24:00 </p>
+                        <p>Sunday - 11.00 - 21.00 </p>
+                    </div>
+                </div>    
+            </div>
+            <p class="copyright"> All Rights Reserved The Coffee Shop 2017.</p>
+        </footer>
+        
+        <script src="{{root}}assets/js/app.js"></script>
     </body>
 </html>
