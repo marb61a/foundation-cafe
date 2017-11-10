@@ -110,6 +110,29 @@ let webpackConfig = {
   }
 };
 
+// Combine the JS into one file which is then minified in production
+function javascript(){
+  return gulp.src(PATHS.entries)
+    .pipe(named())
+    .pipe($.sourcemaps.init())
+    .pipe(webpackStream(webpackConfig, webpack2))
+    .pipe($.if(PRODUCTION, $.uglify()
+      .on('error', e => { console.log(e); })
+    ))
+    .pipe($.if(!PRODUCTION, $.sourcemaps.write()))
+    .pipe(gulp.dest(PATHS.dist + '/assets/js'));
+}
+
+// Copy images into the dist folder which are compressed in production
+function images(){
+  return gulp.src('src/assets/img/**/*')
+    .pipe($.if(PRODUCTION, $.imagemin({
+      progressive: true
+    })))
+    .pipe(gulp.dest(PATHS.dist + '/assets/img'));
+}
+
+
 // Start a server with BrowserSync to preview site in
 function server(done){
   browser.init({
@@ -127,4 +150,10 @@ function reload(done){
 // Watch for changes to Static Assets, Page, Sass, JS
 function watch(){
   gulp.watch(PATHS.assets, copy);
+  gulp.watch('src/pages/**/*.html').on('all', gulp.series(pages, browser.reload));
+  gulp.watch('src/{layouts,partials}/**/*.html').on('all', gulp.series(resetPages, pages, browser.reload));
+  gulp.watch('src/assets/scss/**/*.scss').on('all', sass);
+  gulp.watch('src/assets/js/**/*.js').on('all', gulp.series(javascript, browser.reload));
+  gulp.watch('src/assets/img/**/*').on('all', gulp.series(images, browser.reload));
+  gulp.watch('src/styleguide/**').on('all', gulp.series(styleGuide, browser.reload));
 }
