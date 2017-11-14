@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import plugins from 'gulp-load-plugins';
 import yargs from 'yargs';
